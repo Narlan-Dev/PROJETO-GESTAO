@@ -2,8 +2,9 @@ const textField = document.querySelectorAll('.textfield')
 const inputs = document.querySelectorAll('.input')
 var titles = document.querySelectorAll('.title')
 var problemas = []
+let fristDot = false;
 
-//class of objects
+//Class of objects
 class RequiredFildeException {
     constructor() {
         this.name = "RequiredFildeException"
@@ -20,11 +21,20 @@ class User{
     }
 }
 
-//main
+//Main
 function start(){
     var botaoGargalo = document.querySelector('.btn')
-    onlyNumber()
-    changeColorOnClick(textField, titles)
+    
+    //Selection on textFields
+    for(let i = 0; i < textField.length; i++){
+        if((i == 1)||(i == 2)||(i == 5)){
+            restrictionCaracter(textField[i], false)
+        }else{
+            restrictionCaracter(textField[i], true)
+        }
+    }
+
+    changeColorOnClick(inputs, titles)
     botaoGargalo.addEventListener('click', () =>{
         try {
             originalColor(titles)
@@ -36,6 +46,7 @@ function start(){
     })
 }
 
+//Functionality
 function handleResolverGargalo(){
     var mostrarDicas = document.querySelector("#card-itens-lista")
     mostrarDicas.innerHTML = ""
@@ -55,7 +66,6 @@ function handleResolverGargalo(){
     }
    
 }
-
 function gargalo(user){
     var existeProblema = false
     var texto
@@ -81,31 +91,43 @@ function gargalo(user){
         problemas.push(texto)
         existeProblema = true
     }
-
-    if(user.vendas ){
+    if(user.vendas > 5){
         texto = "Parabéns! Você está vendendo. Continue assim."
         problemas.push(texto)
         existeProblema = true
     }
-
-
     if(!existeProblema){
         problemas.push("Suas métricas estão ótimas")
     }
 }
 
 //Restrictions
-function onlyNumber(){
-    for(let i = 0; i < textField.length; i++){
-        textField[i].addEventListener("keypress", function(e){
+function restrictionCaracter(element, decision){
+    if(decision === true){
+        element.addEventListener("keypress", function(e){
             const keyCode = (e.keyCode ? e.keyCode : e.wich)
+            if(inputs[0].value == ""){
+                //Only number
+                if(!(keyCode > 47 && keyCode < 58)){
+                    e.preventDefault()
+                }
+            }else{
+                //privat "e"
+                if(keyCode == 101){
+                    e.preventDefault()
+                }
+            }
+        })
+    }else{
+        element.addEventListener("keypress", function(e){
+            const keyCode = (e.keyCode ? e.keyCode : e.wich)
+            //Only number
             if(!(keyCode > 47 && keyCode < 58)){
                 e.preventDefault()
             }
         })
     }
 }
-
 function testEmptyField(){
     for(let i = 0; i < inputs.length; i++){
         if(inputs[i].value == ""){
