@@ -1,4 +1,3 @@
-const textField = document.querySelectorAll('.textfield')
 const inputs = document.querySelectorAll('.input')
 var titles = document.querySelectorAll('.title')
 var problemas = []
@@ -25,12 +24,12 @@ class User{
 function start(){
     var botaoGargalo = document.querySelector('.btn')
     
-    //Selection on textFields
-    for(let i = 0; i < textField.length; i++){
+    //Selection on inputs
+    for(let i = 0; i < inputs.length; i++){
         if((i == 1)||(i == 2)||(i == 5)){
-            restrictionCaracter(textField[i], false)
+            restrictionCaracter(inputs[i], false)
         }else{
-            restrictionCaracter(textField[i], true)
+            restrictionCaracter(inputs[i], true)
         }
     }
 
@@ -61,44 +60,75 @@ function handleResolverGargalo(){
     }
 
     //limpando o array de problemas
+    clearProblemsVector()
+   
+}
+
+//limpador do array de problemas
+function clearProblemsVector(){
     while(problemas.length){
         problemas.pop()
     }
-   
 }
-function gargalo(user){
-    var existeProblema = false
-    var texto
-    var x = 100*user.pageV/user.cliques
 
+//checando se o usuário é burro o suficiente pra colocar coisas sem sentido
+function CheckLogicErrorFrom(user){
+    var dicas = document.querySelector("#card-itens-lista")
+    dicas.style.color = 'red';
+
+    if(user.pageV > user.cliques){
+        clearProblemsVector()
+        texto = "O Page View não pode ser maior do que a quantidade de cliques, verifique as informações inseridas e tente novamente."
+        problemas.push(texto)
+    }
+    else if(user.valorGasto == 0){
+        clearProblemsVector()
+        texto = "Se vc n gastou nada, como pode querer ganhar algo vagabundo?"
+        problemas.push(texto)
+    }
+    else{
+        dicas.style.color = 'white'
+    } 
+}
+
+function gargalo(user){
+    var texto = ""
+    var score = 100  //criar sistema de score
+    var x = 100*user.pageV/user.cliques
+   
     if(user.valorGasto < 25){
         texto = "O orçamento está baixo. Aumente para pelo menos 25 reais. Para conseguir dinheiro, teste estes sites: 99freela, GetNinjas e Workana."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(x < 60){
         texto = "Melhore o carregamento da página. Vc está perdendo " + (100 - x) + "% do seu tráfego. Pra uma anlálise mais concreta use o site GTMetrix."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(user.cTR < 2){
         texto = "Um CTR abaixo de 2% é péssimo para o seu negócio. Melhore o criativo, deixando-o mais chamativo, com promessas mais fortes (cuidado com os bloqueios no FaceBook)."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(user.cPM > 15){
         texto = "Um CPM acima de R$15 é considerado alto. Melhore o criativo e gere mais engajamento no anúncio. Evite super segmentar seu público."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(user.vendas > 5){
         texto = "Parabéns! Você está vendendo. Continue assim."
         problemas.push(texto)
-        existeProblema = true
     }
-    if(!existeProblema){
-        problemas.push("Suas métricas estão ótimas")
+    if(user.cliques/user.vendas > 200){
+        texto = "A média do e-commerce brasileiro é 200 cliques para uma venda. Você está abaixo da média!"
+        problemas.push(texto)
     }
+    if(problemas.length == 0){
+        problemas.push("Suas métricas estão ótimas!")
+    }
+
+    CheckLogicErrorFrom(user)
 }
 
 //Restrictions
@@ -106,14 +136,14 @@ function restrictionCaracter(element, decision){
     if(decision === true){
         element.addEventListener("keypress", function(e){
             const keyCode = (e.keyCode ? e.keyCode : e.wich)
-            if(inputs[0].value == ""){
+            if(element.value == ""){
                 //Only number
                 if(!(keyCode > 47 && keyCode < 58)){
                     e.preventDefault()
                 }
             }else{
-                //privat "e"
-                if(keyCode == 101){
+                //Private "e", "-" e "+"
+                if((keyCode == 101)||(keyCode == 43)||(keyCode == 45)){
                     e.preventDefault()
                 }
             }
