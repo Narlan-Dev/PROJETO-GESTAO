@@ -50,48 +50,74 @@ function handleResolverGargalo(){
     }
 
     //limpando o array de problemas
-    while(problemas.length){
-        problemas.pop()
-    }
+    clearProblemsVector()
    
 }
 
-function gargalo(user){
-    var existeProblema = false
-    var texto
-    var x = 100*user.pageV/user.cliques
+//limpador do array de problemas
+function clearProblemsVector(){
+    while(problemas.length){
+        problemas.pop()
+    }
+}
 
+//checando se o usuário é burro o suficiente pra colocar coisas sem sentido
+function CheckLogicErrorFrom(user){
+    var dicas = document.querySelector("#card-itens-lista")
+    dicas.style.color = 'red';
+
+    if(user.pageV > user.cliques){
+        clearProblemsVector()
+        texto = "O Page View não pode ser maior do que a quantidade de cliques, verifique as informações inseridas e tente novamente."
+        problemas.push(texto)
+    }
+    else if(user.valorGasto == 0){
+        clearProblemsVector()
+        texto = "Se vc n gastou nada, como pode querer ganhar algo vagabundo?"
+        problemas.push(texto)
+    }
+    else{
+        dicas.style.color = 'white'
+    } 
+}
+
+function gargalo(user){
+    var texto = ""
+    var score = 100  //criar sistema de score
+    var x = 100*user.pageV/user.cliques
+   
     if(user.valorGasto < 25){
         texto = "O orçamento está baixo. Aumente para pelo menos 25 reais. Para conseguir dinheiro, teste estes sites: 99freela, GetNinjas e Workana."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(x < 60){
         texto = "Melhore o carregamento da página. Vc está perdendo " + (100 - x) + "% do seu tráfego. Pra uma anlálise mais concreta use o site GTMetrix."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(user.cTR < 2){
         texto = "Um CTR abaixo de 2% é péssimo para o seu negócio. Melhore o criativo, deixando-o mais chamativo, com promessas mais fortes (cuidado com os bloqueios no FaceBook)."
         problemas.push(texto)
-        existeProblema = true
+
     }
     if(user.cPM > 15){
         texto = "Um CPM acima de R$15 é considerado alto. Melhore o criativo e gere mais engajamento no anúncio. Evite super segmentar seu público."
         problemas.push(texto)
-        existeProblema = true
+
     }
 
-    if(user.vendas ){
-        texto = "Parabéns! Você está vendendo. Continue assim."
+    if(user.cliques/user.vendas > 200){
+        texto = "A média do e-commerce brasileiro é 200 cliques para uma venda. Você está abaixo da média!"
         problemas.push(texto)
-        existeProblema = true
+
     }
 
-
-    if(!existeProblema){
-        problemas.push("Suas métricas estão ótimas")
+    if(problemas.length == 0){
+        problemas.push("Suas métricas estão ótimas!")
     }
+
+    CheckLogicErrorFrom(user)
 }
 
 //Restrictions
