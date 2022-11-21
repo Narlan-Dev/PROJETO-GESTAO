@@ -10,12 +10,13 @@ class RequiredFildeException {
     }
 }
 class User{
-    constructor(valorGasto, cliques, pageV, cPM,  cTR){
+    constructor(valorGasto, cliques, pageV, cPM,  cTR , vendas){
         this.valorGasto = valorGasto
         this.cTR = cTR
         this.cliques = cliques
         this.pageV = pageV
         this.cPM = cPM
+        this.vendas = vendas
     }
 }
 
@@ -39,7 +40,7 @@ function handleResolverGargalo(){
     var mostrarDicas = document.querySelector("#card-itens-lista")
     mostrarDicas.innerHTML = ""
 
-    gargalo(new User(inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, inputs[4].value));
+    gargalo(new User(inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, inputs[4].value, inputs[5].value));
 
     //criando a lista de problemas
     for(var i = 0; i < problemas.length; i++){
@@ -80,6 +81,14 @@ function gargalo(user){
         problemas.push(texto)
         existeProblema = true
     }
+
+    if(user.vendas ){
+        texto = "Parabéns! Você está vendendo. Continue assim."
+        problemas.push(texto)
+        existeProblema = true
+    }
+
+
     if(!existeProblema){
         problemas.push("Suas métricas estão ótimas")
     }
