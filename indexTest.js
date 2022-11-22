@@ -50,7 +50,8 @@ function handleResolverGargalo(){
     var mostrarDicas = document.querySelector("#card-itens-lista")
     mostrarDicas.innerHTML = ""
 
-    gargalo(new User(inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value, inputs[4].value, inputs[5].value));
+    gargalo(new User(inputs[0].value, inputs[1].value, inputs[2].value, 
+        inputs[3].value, inputs[4].value, inputs[5].value));
 
     //criando a lista de problemas
     for(var i = 0; i < problemas.length; i++){
